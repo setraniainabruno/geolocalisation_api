@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    container_name: geolocalisation
+    ports:
+      - "3723:3723"
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    restart: always
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
