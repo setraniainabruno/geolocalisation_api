@@ -4,11 +4,10 @@ from app.models.admin import Admin
 from app.models.livreur import Livreur
 from app.models.client import Client
 import uuid
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 
-
-#Connexion
+# Connexion
 def connexion():
     data = request.get_json()
     try:
@@ -29,10 +28,10 @@ def connexion():
             200,
         )
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
 
-#Création d'un utilisateur
+# Création d'un utilisateur
 def creer_utilisateur():
     data = request.get_json()
 
@@ -96,9 +95,11 @@ def creer_utilisateur():
         )
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
-#Recuperation de tous les utilisateurs
+
+# Recuperation de tous les utilisateurs
+@jwt_required()
 def liste_utilisateurs():
     # print(get_jwt_identity())
     try:
@@ -107,21 +108,24 @@ def liste_utilisateurs():
         return jsonify({"total": len(data), "data": data}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
-#Recuperation d'un utilisateur par id
-def get_utilisateur(id_user):
+
+# Recuperation d'un utilisateur par id
+@jwt_required()
+def utilisateur_par_id(id_user):
     try:
         utilisateur = Utilisateur.objects(id_user=id_user).first()
         if not utilisateur:
             return jsonify({"error": "Utilisateur non trouvé"}), 404
 
         return jsonify(utilisateur.to_json(include_child=True)), 200
-
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
-#Modification d'un utilisateur
+
+# Modification d'un utilisateur
+@jwt_required()
 def modifier_utilisateur(id_user):
     data = request.get_json()
     try:
@@ -168,10 +172,11 @@ def modifier_utilisateur(id_user):
         return jsonify(utilisateur.to_json(include_child=True)), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
 
-#Modification du mot de passe
+# Modification du mot de passe
+@jwt_required()
 def modifier_mot_de_passe(id_user):
     data = request.get_json()
     try:
@@ -193,10 +198,11 @@ def modifier_mot_de_passe(id_user):
 
         return jsonify({"message": "Mot de passe modifié avec succès"}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": f"Erreur : {e}"}), 500
 
 
-#Suppression d'un utilisateur
+# Suppression d'un utilisateur
+@jwt_required()
 def supprimer_utilisateur(id_user):
     try:
         utilisateur = Utilisateur.objects(id_user=id_user).first()
@@ -207,6 +213,4 @@ def supprimer_utilisateur(id_user):
 
         return jsonify({"message": f"Utilisateur {id_user} supprimé"}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
+        return jsonify({"message": f"Erreur : {e}"}), 500

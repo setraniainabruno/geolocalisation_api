@@ -5,6 +5,11 @@ from mongoengine import connect
 import os
 from flask_jwt_extended import JWTManager
 from app.routes.utilisateur_routes import utilisateur_bp
+from app.routes.document_livreur_routes import document_livreur_bp
+from app.routes.notification_routes import notification_bp
+from app.routes.produit_routes import produit_bp
+from app.routes.commande_routes import commande_bp
+from app.routes.livraison_routes import livraison_bp
 
 
 def create_app():
@@ -32,5 +37,10 @@ def create_app():
     app.register_blueprint(index, url_prefix="/")
 
     app.register_blueprint(utilisateur_bp, url_prefix="/api/utilisateurs")
+    app.register_blueprint(document_livreur_bp, url_prefix="/api/documentlivreurs")
+    app.register_blueprint(notification_bp, url_prefix="/api/notifications")
+    app.register_blueprint(produit_bp, url_prefix="/api/produits")
+    app.register_blueprint(commande_bp, url_prefix="/api/commandes")
+    app.register_blueprint(livraison_bp, url_prefix="/api/livraisons")
 
     return app

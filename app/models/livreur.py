@@ -9,6 +9,7 @@ from mongoengine import (
 )
 
 
+
 class Livreur(Document):
     id_livreur = StringField(primary_key=True)
     utilisateur = ReferenceField(
@@ -25,6 +26,21 @@ class Livreur(Document):
     def to_json(self):
         return {
             "id_livreur": self.id_livreur,
+            "vehicule": self.vehicule,
+            "immatriculation": self.immatriculation,
+            "disponibilite": self.disponibilite,
+            "note_moyenne": self.note_moyenne,
+            "nb_livraisons": self.nb_livraisons,
+        }
+
+    def get_util(self):
+        u = self.utilisateur
+        return {
+            "nom": u.nom,
+            "prenom": u.prenom,
+            "email": u.email,
+            "role": u.role,
+            "telephone": u.telephone,
             "vehicule": self.vehicule,
             "immatriculation": self.immatriculation,
             "disponibilite": self.disponibilite,
